@@ -1,0 +1,25 @@
+﻿@page
+@model Main.Pages.LoginModel
+@{
+    ViewData["Title"] = "Login";
+}
+
+<h1>Login</h1>
+
+@Html.Raw(Model.User != null ? $"<h2>Logged in as {Model.User.UserName}</h2>" : "")
+<form method="post">
+    <div class="form-group">
+        <label class="control-label">Username</label>
+        <input name="username" class="form-control" />
+        <span>@ViewBag.usernameError</span>
+    </div>
+    <div class="form-group">
+        <label class="control-label">Password</label>
+        <input name="password" type="password" class="form-control" />
+        <span>@ViewBag.passwordError</span>
+    </div>
+    <button type="submit">Login...</button>
+</form>
+<hr />
+<a href="/Users/Create">Register...</a>
+

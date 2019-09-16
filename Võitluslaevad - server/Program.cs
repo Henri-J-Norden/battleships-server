@@ -8,10 +8,12 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
-namespace Võitluslaevad___server {
+namespace Main {
     public class Program {
         public static void Main(string[] args) {
-            CreateWebHostBuilder(args).Build().Run();
+            CreateWebHostBuilder(args)
+                .UseUrls("http://localhost:8000", "http://0.0.0.0:8000")
+                .Build().Run();
         }
 
         public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>

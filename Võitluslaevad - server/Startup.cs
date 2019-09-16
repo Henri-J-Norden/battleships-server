@@ -2,14 +2,19 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using DAL;
+using Game;
+using Main.Hubs;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Võitluslaevad___server {
+
+namespace Main {
     public class Startup {
         public Startup(IConfiguration configuration) {
             Configuration = configuration;
@@ -19,14 +24,22 @@ namespace Võitluslaevad___server {
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services) {
+            InstanceHandler.ProgramPath = Configuration.GetValue<string>("GamePath");
+
+            services.AddDbContext<AppDbContext>(
+                options => options.UseMySQL(Configuration.GetConnectionString("DefaultConnection")));
+
             services.Configure<CookiePolicyOptions>(options => {
                 // This lambda determines whether user consent for non-essential cookies is needed for a given request.
                 options.CheckConsentNeeded = context => true;
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+
+            services.AddSignalR();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -38,8 +51,14 @@ namespace Võitluslaevad___server {
             }
 
             app.UseStaticFiles();
-            app.UseCookiePolicy();
-
+            //app.UseCookiePolicy();
+            app.UseSignalR(routes => {
+                routes.MapHub<ChatHub>("/chatHub");
+                routes.MapHub<GameHub>("/gameHub");
+                routes.MapHub<ServerHub>("/serverHub", options => {
+                    options.ApplicationMaxBufferSize = 100 * 1024;
+                });
+            });
             app.UseMvc();
         }
     }

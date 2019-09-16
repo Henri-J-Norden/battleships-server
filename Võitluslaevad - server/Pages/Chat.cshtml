@@ -1,0 +1,30 @@
+﻿@page
+@model Main.Pages.ChatModel
+@{
+    ViewData["Title"] = "Chat";
+}
+
+<h1>Chat</h1>
+
+<div class="container">
+    <div class="row">&nbsp;</div>
+    <div class="row">
+        <div>
+            Message: <input type="text" id="messageInput" />
+            <input type="button" id="sendButton" value="Send Message" />
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <hr />
+        </div>
+    </div>
+    <div class="row">
+        <div>
+            <ul id="messagesList"></ul>
+        </div>
+    </div>
+</div>
+<script src="~/lib/signalr/dist/browser/signalr.js"></script>
+<script src="~/js/user.js"></script>
+<script src="~/js/chat.js"></script>
